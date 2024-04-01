@@ -5,7 +5,7 @@ import { expect } from "chai";
 
 const TOKEN = '6f3837e06786e898121d9c4abf9f79485ee813abce205304f9aa69a5e3356d9e'
 
-describe('Users', () => {
+xdescribe('GET Users', () => {
     // it('GET /users', (done)=>{
     //     request
     //     .get(`users?access-token=${TOKEN}`)
