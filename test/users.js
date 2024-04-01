@@ -17,21 +17,49 @@ describe('Users', () => {
     //     })
     // })
 
+    let userId;
 
-    //used .then
-    it('GET /users', (done) => {
-        return request
-            .get(`users?access-token=${TOKEN}`)
-            .then((res) => {
-                expect(res.body).to.not.be.empty;
-            })
+    describe('POST', () => {
+        it('/users', () => {
+
+            const data = {
+                email: `eed-${Math.floor(Math.random() * 69)}@gmail.com`,
+                name: 'gg',
+                gender: 'Male',
+                status: 'Inactive'
+            };
+
+            return request
+                .post('users')
+                .set("Authorization", `Bearer ${TOKEN}`)
+                .send(data)
+                .then((res) => {
+                    console.log(res.body)
+                    // expect(res.body.data.email).to.eq(data.email)
+                    expect(res.body.data).to.deep.include(data)
+                    userId = res.body.data.id
+                    console.log(userId)
+                })
+        });
+    })
+
+    //get method *********
+
+    describe('GET', () => {
+        it('/users', () => {
+            return request
+                .get(`users?access-token=${TOKEN}`)
+                .then((res) => {
+                    expect(res.body).to.not.be.empty;
+                })
+        })
     })
 
     it('GET /users/:id', () => {
         return request
-            .get(`users/1?access-token=${TOKEN}`)
+            .get(`users/${userId}?access-token=${TOKEN}`)
             .then((res) => {
-                expect(res.body.data.id).to.be.eq(6815710);
+                expect(res.body.data.id).to.be.eq(userId);
             })
     })
 
@@ -50,53 +78,38 @@ describe('Users', () => {
             })
     })
 
-    it('POST /users', () => {
-
-        const data = {
-            email: `eed-${Math.floor(Math.random() * 69)}@gmail.com`,
-            name: 'gg',
-            gender: 'Male',
-            status: 'Inactive'
-        };
-
-        return request
-            .post('users')
-            .set("Authorization", `Bearer ${TOKEN}`)
-            .send(data)
-            .then((res) => {
-                console.log(res.body)
-                // expect(res.body.data.email).to.eq(data.email)
-                expect(res.body.data).to.deep.include(data)
-            })
-    });
-
 
     //put method***********
 
-    it('PUT /users/:id', () => {
-        const data = {
-            status: "active",
-            name: `gg - ${Math.floor(Math.random() * 69)}`
-        }
+    describe('PUT', () => {
 
-        return request
-            .put('/users/6816525')
-            .set("Authorization", `Bearer ${TOKEN}`)
-            .send()
-            .then((res) => {
-                console.log(res.body.data);
-                expect(res.body.data).to.deep.include(data)
-            })
+        it('/users/:id', () => {
+            const data = {
+                status: "active",
+                name: `gg - ${Math.floor(Math.random() * 69)}`
+            }
+
+            return request
+                .put(`/users/${userId}`)
+                .set("Authorization", `Bearer ${TOKEN}`)
+                .send()
+                .then((res) => {
+                    console.log(res.body.data);
+                    expect(res.body.data).to.deep.include(data)
+                })
+        })
     })
 
     //delete method
 
-    it.only('DELETE /users/:id', () => {
-        return request
-            .delete('users/6816525')
-            .set("Authorization", `Bearer ${TOKEN}`)
-            .then(res => {
-                expect(res.body.data).to.be.eq(null);
-            })
+    xdescribe('DELETE', () => {
+        it('/users/:id', () => {
+            return request
+                .delete(`/users/${userId}`)
+                .set("Authorization", `Bearer ${TOKEN}`)
+                .then(res => {
+                    expect(res.body.data).to.be.eq(null);
+                })
+        })
     })
 }) 
